@@ -5,60 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e6607b8d-cff1-4fc9-a22d-245c06a7751c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Happy_library.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/1.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Happy_library/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Happy_library/asgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Happy_library/settings.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Happy_library/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Happy_library/wsgi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/operation/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/operation/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/operation/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/operation/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/operation/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/operation/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/operation/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/fonts/sylfaen.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trade/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trade/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trade/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trade/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trade/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trade/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trade/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trade/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/admin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/apps.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/migrations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/tests.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/urls.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/13.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/WexinPay.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/excel_to_python.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/gen_captcha.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/manage_resp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/manage_token.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/middleware.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -70,7 +18,17 @@
     <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="539">
+              <caret line="109" column="44" selection-start-line="109" selection-start-column="44" selection-end-line="109" selection-end-column="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -102,6 +60,7 @@
       <find>get_token_info</find>
       <find>token</find>
       <find>User</find>
+      <find>&lt;&lt;&lt;&lt;</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -136,6 +95,7 @@
         <option value="$PROJECT_DIR$/utils/middleware.py" />
         <option value="$PROJECT_DIR$/user/views.py" />
         <option value="$PROJECT_DIR$/requirements.txt" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -431,15 +391,16 @@
       <workItem from="1582711488379" duration="4612000" />
       <workItem from="1582809881969" duration="7559000" />
       <workItem from="1582851009130" duration="2610000" />
-      <workItem from="1582943839863" duration="4558000" />
+      <workItem from="1582943839863" duration="4981000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="159827000" />
+    <option name="totallyTimeSpent" value="160250000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21321961" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -800,6 +761,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
           <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="539">
+          <caret line="109" column="44" selection-start-line="109" selection-start-column="44" selection-end-line="109" selection-end-column="44" />
         </state>
       </provider>
     </entry>
