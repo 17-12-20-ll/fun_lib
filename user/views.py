@@ -9,7 +9,8 @@ from user.models import User, Group
 from utils.gen_captcha import create_img
 from utils.manage_resp import resp
 from utils.manage_token import get_data_obj, create_token, check_token
-from utils.tools import timestamp_to_str, img_code_overdue_decode
+from utils.send_email import send_mail
+from utils.tools import timestamp_to_str, img_code_overdue_decode, img_code_overdue_create
 
 
 # =======================User=======================
@@ -96,9 +97,42 @@ def login(request):
         return resp(data={'token': token, 'login_name': u.login_name})
 
 
+@csrf_exempt
 def forget_email_pwd(request):
+    """根据注册的邮箱找回密码"""
     if request.method == 'POST':
-        pass
+        email = request.POST.get('email')
+        u = User.objects.filter(email=email).first()
+        if not u:
+            return resp(201, '用户不存在')
+        # 获取唯一验证的字符串，过期时间、用户id，创建时间
+        sequence = img_code_overdue_create(id=u.id, _time=time.time(), ex=30 * 60)
+        if not u.email:
+            return resp(401, '用户未填写邮箱')
+        flag = send_mail(u.email, sequence)
+        if not flag:
+            return resp(402, '发送失败')
+        return resp()
+
+
+@csrf_exempt
+def update_forget_email_pwd(request):
+    if request.method == 'POST':
+        # 获取唯一的标识字符串
+        sequence = request.POST.get('sequence')
+        pwd = request.POST.get('pwd')
+        # 解析字符串
+        try:
+            obj = img_code_overdue_decode(sequence)
+        except:
+            obj = ''
+        if not obj:
+            return resp(401, '失效')
+        u_id = obj['id']
+        u = User.objects.filter(id=u_id).first()
+        u.pwd = pwd
+        u.save()
+        return resp()
 
 
 def captcha(request):
@@ -210,8 +244,6 @@ def get_user_info(request):
         # 判断当前如何获取的详情数据，分析应当传递后端数据还是前端数据
         # 需要检测token的值，如果传递的是admin则返回后端数据，传递的是普通的数据，返回前端的数据
         token = request.META.get('HTTP_AUTH_TOKEN')
-        if not token:
-            return resp(code=400, msg='处于没有登陆状态')
         obj = check_token(token)
         if obj:
             # token通过校验
@@ -284,6 +316,7 @@ def query_admin(request):
 
 
 # ====================Group===================
+@csrf_exempt
 def add_group(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -302,6 +335,7 @@ def del_group(request):
         return resp()
 
 
+@csrf_exempt
 def update_group(request):
     if request.method == 'POST':
         g_id = request.POST.get('id')
@@ -320,8 +354,18 @@ def get_group_info(request):
         if g_id:
             """返回单条数据"""
             g = Group.objects.filter(id=g_id).first()
-            return resp(data=g.to_name_dict())
+            return resp(data=g.to_full_dict())
         else:
             """返回所有数据"""
             g_all = Group.objects.all()
-            return resp(data=[i.to_full_dict() for i in g_all])
+            return resp(data=[i.to_name_dict() for i in g_all])
+
+
+def get_to_name_info(request):
+    """根据分组名查询分组"""
+    if request.method == 'GET':
+        name = request.GET.get('name')
+        g_all = Group.objects.all()
+        if name:
+            g_all = Group.objects.filter(name__contains=name)
+        return resp(data=[i.to_name_dict() for i in g_all])

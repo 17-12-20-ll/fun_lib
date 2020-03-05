@@ -1,4 +1,4 @@
-a = {'login_name': 'admin', 'user_name': '789', 'pwd': 123456}
-
-for i in a:
-    print({i: a[i]})
+a = [2, 3, 4, 5]
+b = [1, 2, 3]
+print(set(a) - set(b))
+print(set(b) - set(a))

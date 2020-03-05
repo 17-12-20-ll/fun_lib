@@ -24,6 +24,7 @@ class OneSrc(models.Model):
         return {
             'name': self.name,
             'pos': self.pos,
+            'id': self.id
         }
 
     def to_all_dict(self):
@@ -65,6 +66,7 @@ class TwoSrc(models.Model):
             'pos': self.pos,
             'src_type': self.src_type,
             'one_src': self.one_src.name,
+            'one_src_id': self.one_src.id,
         }
 
     def to_list_dict(self):
@@ -93,6 +95,15 @@ class TwoSrc(models.Model):
                 'url': self.title_url,
                 'one_src': self.one_src.name,
             }
+
+    def to_update_return(self):
+        return {
+            'id': self.id,
+            'one_name': self.one_src.name,
+            'pos': self.pos,
+            'two_name': self.name,
+            'add_time': self.add_time.strftime("%Y-%m-%d %H:%M:%S")
+        }
 
     class Meta:
         db_table = 'two_src'
@@ -140,6 +151,7 @@ class FourSrc(models.Model):
             'desc': self.desc,
             'username': self.username,
             'pwd': self.pwd,
+            'add_time': self.add_time.strftime("%Y-%m-%d %H:%M:%S"),
         }
 
     def to_list_dict(self):

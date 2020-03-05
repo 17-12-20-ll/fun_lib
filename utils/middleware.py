@@ -8,7 +8,9 @@ class IsTokenMiddleWare(MiddlewareMixin):
     """添加阅读量"""
 
     def process_request(self, request):
-        need_token = ['/user/get_admins/', '/user/update_admin/', '/user/update_profile/', '/user/update_pwd/']
+        need_token = ['/user/get_admins/', '/user/update_admin/', '/user/update_profile/', '/user/get_user_info/',
+                      '/user/update_pwd/',
+                      '/trade/invoice/']
         if request.path in need_token:
             # 判断需要token的路由，如果没有token，则不通过
             token = request.META.get('HTTP_AUTHENTICATION')

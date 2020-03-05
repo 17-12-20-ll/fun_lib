@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from user.models import Group
+from user.models import Group, User
 
 
 class TradeType(models.Model):
@@ -21,3 +21,30 @@ class TradeType(models.Model):
 
     class Meta:
         db_table = 'trade_type'
+
+
+class Invoice(models.Model):
+    company = models.CharField(max_length=32, verbose_name='公司名称')
+    code = models.CharField(max_length=32, verbose_name='纳税人识别码')
+    addr_tel = models.CharField(max_length=128, verbose_name='地址及电话')
+    acount = models.CharField(max_length=32, verbose_name='开户行及账号')
+    receive_email = models.CharField(max_length=32, verbose_name='接受发票的邮箱')
+    receive_user = models.CharField(max_length=16, verbose_name='接受发票的人的名字')
+    receive_addr = models.CharField(max_length=32, verbose_name='接受发票的人的地址')
+    receive_phone = models.CharField(max_length=16, verbose_name='接受发票的人的电话')
+    u = models.ForeignKey(User, related_name='invoices', on_delete=models.CASCADE, verbose_name='用户发票信息，级联删除')
+
+    def to_dict(self):
+        return {
+            'company': self.company,
+            'code': self.code,
+            'addr_tel': self.addr_tel,
+            'acount': self.acount,
+            'receive_email': self.receive_email,
+            'receive_user': self.receive_user,
+            'receive_addr': self.receive_addr,
+            'receive_phone': self.receive_phone,
+        }
+
+    class Meta:
+        db_table = 'trade_invoice'

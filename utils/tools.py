@@ -15,6 +15,7 @@ def timestamp_to_str(timestamp=None, format='%Y-%m-%d %H:%M:%S'):
         return time.strftime(format, time.localtime())
 
 
+# 下述两个方法适用于任何地方的字符串加解密
 def img_code_overdue_create(**kwargs):
     """构建验证码序列"""
     return encrypt(kwargs)
