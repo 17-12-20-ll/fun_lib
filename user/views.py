@@ -325,3 +325,4 @@ def get_group_info(request):
             """返回所有数据"""
             g_all = Group.objects.all()
             return resp(data=[i.to_full_dict() for i in g_all])
+

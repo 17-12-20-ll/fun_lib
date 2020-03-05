@@ -11,4 +11,9 @@ urlpatterns = [
     path('insert/', views.insert),
     path('add_four_src/', views.add_four_src),
     path('get_four_src_info/', views.get_four_src_info),
+    path('update_one_src/', views.update_one_src),
+    path('update_two_src/', views.update_two_src),
+    path('add_three_src/', views.add_three_src),
+    path('update_three_src/', views.update_three_src),
+    path('get_three_src_info/', views.get_three_src_info),
 ]

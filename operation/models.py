@@ -29,3 +29,67 @@ class UserLoginLog(models.Model):
 
     class Meta:
         db_table = 'user_login_log'
+
+
+class HelpClass(models.Model):
+    """帮助分类列表"""
+    name = models.CharField(max_length=255, verbose_name='帮助分类名称')
+    desc = models.CharField(max_length=1024, verbose_name='帮助分类描述')
+    pos = models.IntegerField(verbose_name='序号')
+
+    def to_detail_dict(self):
+        """返回单个详情数据"""
+        return {
+            'name': self.name,
+            'desc': self.desc,
+            'pos': self.pos
+        }
+
+    def to_list_dict(self):
+        """返回多个数据"""
+        return {
+            'name': self.name,
+            'pos': self.pos
+        }
+
+    class Meta:
+        db_table = 'help_class'
+
+
+class HelpList(models.Model):
+    """帮助列表"""
+    name = models.CharField(max_length=255, verbose_name='帮助列表名称')
+    desc = models.CharField(max_length=1024, verbose_name='帮助列表描述')
+    pos = models.IntegerField(verbose_name='序号')
+    help_class = models.ForeignKey(HelpClass, related_name='help', on_delete=models.SET_NULL, null=True)
+
+    def to_detail_dict(self):
+        return {
+            'name': self.name,
+            'desc': self.desc,
+            'pos': self.pos,
+            'help_class': self.help_class.name
+        }
+
+    def to_list_dict(self):
+        # 返回多个数据
+        return {
+            'name': self.name,
+            'pos': self.pos
+        }
+
+    class Meta:
+        db_table = 'help_list'
+
+
+
+
+
+
+
+
+
+
+
+
+
