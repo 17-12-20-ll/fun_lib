@@ -1,3 +1,5 @@
+import time
+
 from django.db import models
 
 # Create your models here.
@@ -17,6 +19,13 @@ class TradeType(models.Model):
             'price': self.price,
             'days': self.days,
             'group': self.group_id
+        }
+
+    def to_front_dict(self):
+        return {
+            'id': self.id,
+            'vip': self.name,
+            'price': self.price,
         }
 
     class Meta:
@@ -48,3 +57,53 @@ class Invoice(models.Model):
 
     class Meta:
         db_table = 'trade_invoice'
+
+
+class CardRechargeList(models.Model):
+    """卡密充值列表"""
+    card_id = models.CharField(max_length=32, verbose_name='卡号')
+    card_pwd = models.CharField(max_length=32, verbose_name='密码')
+    trade_type = models.ForeignKey(TradeType, related_name='r_t', on_delete=models.CASCADE, null=True,
+                                   verbose_name='充值类型')
+    # 卡号是否使用 （0代表未使用  1代表已经使用  默认是0）
+    is_use = models.IntegerField(default=0)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'card_id': self.card_id,
+            'card_pwd': self.card_pwd,
+            'trade_type_id': self.trade_type_id
+        }
+
+    class Meta:
+        db_table = 'card_recharge_list'
+
+
+class Order(models.Model):
+    login_name = models.CharField(max_length=32, verbose_name='登陆名')
+    trade_type = models.IntegerField(verbose_name='充值类型')  # 1: 支付宝 2: 微信 3: 卡密
+    # 如果充值类型为卡密自助充值 则存在卡号
+    card_id = models.IntegerField(verbose_name='充值卡号')
+    trade_group = models.IntegerField(verbose_name='支付分类')
+    total = models.IntegerField(verbose_name='充值金额')
+    days = models.IntegerField(verbose_name='有效期')
+    add_time = models.DateTimeField(verbose_name='充值时间', auto_now_add=True)
+    desc = models.CharField(max_length=32, verbose_name='备注')
+    status = models.IntegerField(verbose_name='支付状态', default=0)  # 0代表没有支付 1 代表已经支付
+    order_end_time = models.IntegerField(verbose_name='订单过期时间戳')  # 5min时间戳过期
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_name': self.login_name,
+            'trade_type': self.trade_type,
+            'card_id': self.card_id,
+            'total': self.total,
+            'days': self.days,
+            'add_time': self.add_time,
+            'desc': self.desc,
+        }
+
+    class Meta:
+        db_table = 'order'

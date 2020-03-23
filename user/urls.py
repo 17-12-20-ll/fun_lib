@@ -6,6 +6,7 @@ urlpatterns = [
     path('register/', views.register),
     path('login/', views.login),
     path('update_profile/', views.update_profile),
+    path('update/', views.update),
     path('update_pwd/', views.update_pwd),
     path('forget_email_pwd/', views.forget_email_pwd),
     path('update_forget_email_pwd/', views.update_forget_email_pwd),
@@ -23,5 +24,11 @@ urlpatterns = [
     path('update_admin/', views.update_admin),
     path('add_admin/', views.add_admin),
     path('query_admin/', views.query_admin),
+    path('get_users/', views.get_users),
+    path('get_user_count/', views.get_user_count),
+    path('add_back_user/', views.add_back_user),
+    path('query_user/', views.query_user),
+    # 新分页接口
+    path('get_user/', views.get_user),
 
 ]

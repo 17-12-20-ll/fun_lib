@@ -1,6 +1,9 @@
 import base64
+import datetime
+import json
 import time
 
+from django.db import connection
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
@@ -57,6 +60,8 @@ def login(request):
         except:
             return resp(1003, '验证码不规范')
         pwd = request.POST.get('pwd')
+        if not img_token:
+            return resp(1004, '没有传入验证码序列号')
         token_flag = img_code_overdue_decode(img_token)
         if not token_flag:
             return resp(1001, '验证码过期')
@@ -85,7 +90,7 @@ def login(request):
             u.last_login_ip = u.cur_login_ip
             u.last_login_time = u.cur_login_time
         u.cur_login_ip = ori_op if ori_op else request.META.get('REMOTE_ADDR')
-        u.cur_login_time = timestamp_to_str()
+        u.cur_login_time = datetime.datetime.now()
         if u.login_count:
             u.login_count += 1
         else:
@@ -180,10 +185,12 @@ def check_token_result(request):
         return resp(200) if obj else resp(400)
 
 
+@csrf_exempt
 def update(request):
     """后台修改信息"""
     if request.method == 'POST':
-        group = request.POST.get('group')
+        u_id = request.POST.get("id")
+        group_id = request.POST.get('group_id')
         login_name = request.POST.get('login_name')
         pwd = request.POST.get('pwd')
         email = request.POST.get('email')
@@ -191,7 +198,105 @@ def update(request):
         user_name = request.POST.get('user_name')
         qq = request.POST.get('qq')
         phone = request.POST.get('phone')
-        pass
+        end_time = request.POST.get('end_time')
+        enable = int(request.POST.get('enable'))
+        active = int(json.loads(request.POST.get('active')))
+        u = User.objects.filter(id=u_id).first()
+        u.group_id = group_id
+        u.login_name = login_name
+        u.pwd = pwd
+        u.email = email
+        u.major = major
+        u.user_name = user_name
+        u.qq = qq
+        u.phone = phone
+        u.end_time = end_time
+        u.enable = enable
+        u.active = active
+        u.save()
+        return resp(data=u.to_back_read_dict())
+
+
+def format_user_list(data):
+    """格式化 用户数据"""
+    return {
+        'id': data[0],
+        'login_name': data[1],
+        'user_name': data[2],
+        'group_name': data[3],
+        # 存在一个充值总金额还未添加字段
+        'add_time': data[4].strftime("%Y-%m-%d %H:%M:%S"),
+        'end_time': data[5].strftime("%Y-%m-%d %H:%M:%S") if data[5] else '已过期',
+        'last_login_ip': data[6],
+        'cur_login_ip': data[7],
+    }
+
+
+def get_users(request):
+    """后台获取用户数据"""
+    if request.method == "GET":
+        u_id = request.GET.get('id')
+        if u_id:
+            """代表查询单条数据"""
+            u = User.objects.filter(id=u_id).first()
+            if not u:
+                return resp(400, '没有该用户')
+            return resp(data=u.to_back_read_dict())
+        else:
+            """代表查询列表数据"""
+            cursor = connection.cursor()
+            page = int(request.GET.get('p', 1))
+            page_num = int(request.GET.get('n', 10))
+            sql = f'select a.id,a.login_name,a.user_name,b.name,a.add_time,a.end_time,a.last_login_ip,a.cur_login_ip' \
+                  f' from user a join `group` b on a.group_id=b.id ' \
+                  f'limit {(page - 1) * page_num},{page_num}'
+            cursor.execute(sql)
+            cursor.close()
+            return resp(data=[format_user_list(i) for i in cursor.fetchall()])
+
+
+def get_user(request):
+    """获取user分页数据，以及检索条件"""
+    if request.method == 'GET':
+        cursor = connection.cursor()
+        d = request.GET
+        p = int(d.get('p', 1))
+        n = int(d.get('n', 10))
+        if len(d) > 2:
+            # 查询时 group_id=1&login_name=u&user_name=k&email=1096
+            tmp_l = []
+            for i in d:
+                if i not in ['p', 'n']:
+                    if d[i]:
+                        if i == 'group_id':
+                            tmp_l.append(f'a.group_id={d[i]}')
+                        elif i == 'login_name':
+                            tmp_l.append(f'a.login_name like "%{d[i]}%"')
+                        elif i == 'user_name':
+                            tmp_l.append(f'a.user_name like "%{d[i]}%"')
+                        elif i == 'email':
+                            tmp_l.append(f'a.email like "%{d[i]}%"')
+            tmp_sql = ' and '.join(tmp_l)
+            # 代表有检索条件
+            sql = f'select a.id,a.login_name,a.user_name,b.name,a.add_time,a.end_time,a.last_login_ip,a.cur_login_ip' \
+                  f' from user a join `group` b on a.group_id=b.id where {tmp_sql}' \
+                  f' limit {(p - 1) * n},{n}'
+        else:
+            # 代表查询所有数据分页
+            sql = f'select a.id,a.login_name,a.user_name,b.name,a.add_time,a.end_time,a.last_login_ip,a.cur_login_ip' \
+                  f' from user a join `group` b on a.group_id=b.id ' \
+                  f' limit {(p - 1) * n},{n}'
+        cursor.execute(sql)
+        cursor.close()
+        data = [format_user_list(i) for i in cursor.fetchall()]
+        return resp(data=data, count=len(data))
+
+
+def get_user_count(request):
+    """获取所有用户条数"""
+    if request.method == 'GET':
+        count = User.objects.count()
+        return resp(count=count)
 
 
 @csrf_exempt
@@ -256,6 +361,69 @@ def get_user_info(request):
                 return resp(data=[i.to_back_dict() for i in u_all])
         else:
             return resp(code=400, msg='处于没有登陆状态')
+
+
+@csrf_exempt
+def add_back_user(request):
+    if request.method == 'POST':
+        login_name = request.POST.get('login_name')
+        old_u = User.objects.filter(login_name=login_name).first()
+        if old_u:
+            return resp(1001, '用户名已存在')
+        email = request.POST.get('email')
+        old_u = User.objects.filter(email=email).first()
+        if old_u:
+            return resp(1001, '邮箱已注册')
+        pwd = request.POST.get('pwd')
+        if len(pwd) < 6 or len(pwd) > 16:
+            return resp(1002, '密码长度在6-16')
+        # 获取其他参数
+        group_id = request.POST.get('group_id')
+        major = request.POST.get('major')
+        qq = request.POST.get('qq')
+        user_name = request.POST.get('user_name')
+        phone = request.POST.get('phone')
+        end_time = request.POST.get('end_time')
+        enable = int(request.POST.get('enable'))
+        active = int(json.loads(request.POST.get('active')))
+        u = User()
+        u.group_id = group_id
+        u.login_name = login_name
+        u.email = email
+        u.pwd = pwd
+        u.major = major
+        u.qq = qq
+        u.user_name = user_name
+        u.phone = phone
+        u.end_time = end_time
+        u.enable = enable
+        u.active = active
+        u.save()
+        return resp()
+
+
+# def query_two_src(request):
+#     """条件查询二级资源"""
+#     if request.method == 'GET':
+#         d = request.GET
+#         q = Q()
+#         for i in d:
+#             if d[i] and i != "page" and i != "page_num":
+#                 tmp = i if i == 'one_src_id' else i + '__contains'
+#                 q.add(Q(**{tmp: d[i]}), Q.AND)
+#         data = TwoSrc.objects.filter(q)
+#         return resp(data=[i.to_update_return() for i in data])
+
+def query_user(request):
+    if request.method == 'GET':
+        d = request.GET
+        q = Q()
+        for i in d:
+            if d[i]:
+                tmp = i if i == 'group_id' else i + '__contains'
+                q.add(Q(**{tmp: d[i]}), Q.AND)
+        data = User.objects.filter(q)
+        return resp(data=[i.to_back_read_dict() for i in data])
 
 
 # =====================管理员====================

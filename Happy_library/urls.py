@@ -19,4 +19,5 @@ urlpatterns = [
     path('user/', include(('user.urls', 'user'))),
     path('src/', include(('src.urls', 'src'))),
     path('trade/', include(('trade.urls', 'trade'))),
+    path('operation/', include(('operation.urls', 'operation'))),
 ]

@@ -17,13 +17,15 @@ class User(models.Model):
     major = models.CharField(max_length=32, verbose_name='专业方向')
     qq = models.CharField(max_length=16, verbose_name='qq')
     email = models.CharField(max_length=16, unique=True, verbose_name="邮箱")
-    enable = models.IntegerField(verbose_name='用户可用线程数')
+    enable = models.IntegerField(verbose_name='用户可用线程数', default=1)
+    active = models.IntegerField(verbose_name='用户是否锁定', default=1)
     is_admin = models.IntegerField(verbose_name='是否为admin')
-    end_time = models.DateTimeField(verbose_name='有效时间')
+    end_time = models.DateTimeField(verbose_name='有效时间', auto_now_add=True)
     login_count = models.IntegerField(verbose_name='登录统计')
     add_time = models.DateTimeField(auto_now_add=True, verbose_name='新建时间')
     update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间")
     group = models.ForeignKey('Group', related_name='users', default=1, null=True, on_delete=models.SET_NULL)
+    is_del = models.IntegerField(verbose_name='是否删除', default=0)
 
     def to_back_dict(self):
         return {
@@ -42,7 +44,7 @@ class User(models.Model):
             'email': self.email,
             'enable': self.enable,
             'is_admin': self.is_admin,
-            'end_time': self.end_time.strftime("%Y-%m-%d %H:%M:%S") if self.end_time else None,
+            'end_time': self.end_time if self.end_time else None,
             'login_count': self.login_count,
             'add_time': self.add_time.strftime("%Y-%m-%d %H:%M:%S"),
             'update_time': self.update_time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -56,7 +58,7 @@ class User(models.Model):
             'email': self.email,
             'user_name': self.user_name,
             'phone': self.phone,
-            'last_login_time': self.last_login_time.strftime("%Y-%m-%d %H:%M:%S"),
+            'last_login_time': self.last_login_time.strftime("%Y-%m-%d %H:%M:%S") if self.last_login_time else '',
             'cur_login_time': self.cur_login_time.strftime("%Y-%m-%d %H:%M:%S"),
             'enable': self.enable,
             'end_time': self.end_time.strftime("%Y-%m-%d %H:%M:%S") if self.end_time else None,
@@ -82,6 +84,23 @@ class User(models.Model):
             'username': self.user_name,
             'pwd': self.pwd,
             'role_name': '管理员'
+        }
+
+    def to_back_read_dict(self):
+        return {
+            'id': self.id,
+            'group_id': self.group.id,
+            'group_name': self.group.name,
+            'login_name': self.login_name,
+            'pwd': self.pwd,
+            'email': self.email,
+            'major': self.major,
+            'user_name': self.user_name,
+            'qq': self.qq,
+            'phone': self.phone,
+            'end_time': self.end_time if self.end_time else None,
+            'enable': self.enable,
+            'active': self.active
         }
 
     class Meta:

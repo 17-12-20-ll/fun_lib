@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/views.py" line="262" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e6607b8d-cff1-4fc9-a22d-245c06a7751c" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/utils/send_email.py" afterDir="false" />
+=======
+  <component name="ChangeListManager">
+    <list default="true" id="e6607b8d-cff1-4fc9-a22d-245c06a7751c" name="Default Changelist" comment="">
+>>>>>>> f753b82e86c5f89ae93c484644a4f94cb0b4e1c4
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/1.py" beforeDir="false" afterPath="$PROJECT_DIR$/1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models.py" afterDir="false" />
@@ -20,7 +25,6 @@
       <change beforePath="$PROJECT_DIR$/utils/middleware.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/middleware.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/tools.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,6 +33,7 @@
   <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
     <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
   </component>
+<<<<<<< HEAD
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
@@ -127,6 +132,8 @@
       </file>
     </leaf>
   </component>
+=======
+>>>>>>> f753b82e86c5f89ae93c484644a4f94cb0b4e1c4
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -171,6 +178,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+<<<<<<< HEAD
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
@@ -252,15 +260,23 @@
         </subPane>
       </pane>
     </panes>
+=======
+  <component name="ProjectId" id="1YT8LDT1AD9f9My29kjYTT5n8mF" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+>>>>>>> f753b82e86c5f89ae93c484644a4f94cb0b4e1c4
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/trade" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -273,18 +289,6 @@
       <recent name="E:\A_py_prejects\prejects\Happy_library\static\fonts" />
       <recent name="E:\A_py_prejects\prejects\Happy_library\src" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Django server.Happy_library">
     <configuration name="1 (1)" type="PythonConfigurationType" factoryName="Python">
@@ -375,7 +379,11 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+<<<<<<< HEAD
     <configuration name="send_email" type="PythonConfigurationType" factoryName="Python" temporary="true">
+=======
+    <configuration name="tools" type="PythonConfigurationType" factoryName="Python" temporary="true">
+>>>>>>> f753b82e86c5f89ae93c484644a4f94cb0b4e1c4
       <module name="Happy_library" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -388,7 +396,11 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+<<<<<<< HEAD
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/send_email.py" />
+=======
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/tools.py" />
+>>>>>>> f753b82e86c5f89ae93c484644a4f94cb0b4e1c4
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -397,7 +409,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="tools" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="views" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Happy_library" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -405,12 +417,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/utils" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/tools.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/views.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -427,7 +439,7 @@
         <env name="PYTHONUNBUFFERED" value="1" />
         <env name="DJANGO_SETTINGS_MODULE" value="Happy_library.settings" />
       </envs>
-      <option name="SDK_HOME" value="E:\A_py_prejects\env\Happy_library_env\Scripts\python.exe" />
+      <option name="SDK_HOME" value="D:\Anaconda3\python.exe" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -450,6 +462,7 @@
       <item itemvalue="Python.tools" />
       <item itemvalue="Python.excel_to_python" />
       <item itemvalue="Python.models" />
+<<<<<<< HEAD
       <item itemvalue="Python.send_email" />
     </list>
     <recent_temporary>
@@ -459,8 +472,31 @@
         <item itemvalue="Python.tools" />
         <item itemvalue="Python.excel_to_python" />
         <item itemvalue="Python.manage_token" />
+=======
+      <item itemvalue="Python.views" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.manage_token" />
+        <item itemvalue="Python.views" />
+        <item itemvalue="Python.models" />
+        <item itemvalue="Python.tools" />
+        <item itemvalue="Python.excel_to_python" />
+>>>>>>> f753b82e86c5f89ae93c484644a4f94cb0b4e1c4
       </list>
     </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -489,6 +525,7 @@
       <workItem from="1582711488379" duration="4612000" />
       <workItem from="1582809881969" duration="7559000" />
       <workItem from="1582851009130" duration="2610000" />
+<<<<<<< HEAD
       <workItem from="1582943839863" duration="30561000" />
       <workItem from="1583029435638" duration="4902000" />
       <workItem from="1583159396053" duration="4894000" />
@@ -496,9 +533,26 @@
       <workItem from="1583247701913" duration="4139000" />
       <workItem from="1583332243830" duration="3454000" />
       <workItem from="1583390910902" duration="5866000" />
+=======
+      <workItem from="1582943839863" duration="4981000" />
+      <workItem from="1582955168410" duration="22867000" />
+      <workItem from="1583030542621" duration="9967000" />
+      <workItem from="1583118533613" duration="8385000" />
+      <workItem from="1583212112720" duration="17270000" />
+      <workItem from="1583408246696" duration="1383000" />
     </task>
+    <task id="LOCAL-00001" summary="3/5">
+      <created>1583408421172</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1583408421172</updated>
+>>>>>>> f753b82e86c5f89ae93c484644a4f94cb0b4e1c4
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
+<<<<<<< HEAD
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="219033000" />
   </component>
@@ -530,20 +584,90 @@
       <window_info anchor="right" id="Database" order="4" />
     </layout>
   </component>
+=======
+>>>>>>> f753b82e86c5f89ae93c484644a4f94cb0b4e1c4
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="3/5" />
+    <option name="LAST_COMMIT_MESSAGE" value="3/5" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582966349055">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1582966349055" />
+    <state x="372" y="3" key="CommitChangelistDialog2" timestamp="1583408417703">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="372" y="3" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1583408417703" />
+    <state x="438" y="126" key="FileChooserDialogImpl" timestamp="1583218262396">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="438" y="126" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1583218262396" />
+    <state width="1493" height="103" key="GridCell.Tab.0.bottom" timestamp="1583250422319">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1583250422319" />
+    <state width="1493" height="103" key="GridCell.Tab.0.center" timestamp="1583250422319">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1583250422319" />
+    <state width="1493" height="103" key="GridCell.Tab.0.left" timestamp="1583250422319">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1583250422319" />
+    <state width="1493" height="103" key="GridCell.Tab.0.right" timestamp="1583250422319">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1583250422319" />
+    <state width="1493" height="103" key="GridCell.Tab.1.bottom" timestamp="1583250422319">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1583250422319" />
+    <state width="1493" height="103" key="GridCell.Tab.1.center" timestamp="1583250422319">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1583250422319" />
+    <state width="1493" height="103" key="GridCell.Tab.1.left" timestamp="1583250422319">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1583250422319" />
+    <state width="1493" height="103" key="GridCell.Tab.1.right" timestamp="1583250422319">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="103" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1583250422319" />
+    <state x="158" y="14" key="SettingsEditor" timestamp="1582955576507">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="158" y="14" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1582955576507" />
+    <state x="449" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1583212167113">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="449" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1583212167113" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1583226687614">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1583226687614" />
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+<<<<<<< HEAD
     <SUITE FILE_PATH="coverage/Happy_library$zzzz.coverage" NAME="zzzz Coverage Results" MODIFIED="1581844498412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/Happy_library$models.coverage" NAME="models Coverage Results" MODIFIED="1582378462634" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/Happy_library$send_email.coverage" NAME="send_email Coverage Results" MODIFIED="1582958006502" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/Happy_library$1__1_.coverage" NAME="1 (1) Coverage Results" MODIFIED="1582959356323" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Happy_library$1__2_.coverage" NAME="1 (2) Coverage Results" MODIFIED="1581844167223" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
+=======
+>>>>>>> f753b82e86c5f89ae93c484644a4f94cb0b4e1c4
     <SUITE FILE_PATH="coverage/Happy_library$1.coverage" NAME="1 Coverage Results" MODIFIED="1581661990508" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Happy_library$1__2_.coverage" NAME="1 (2) Coverage Results" MODIFIED="1581844167223" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
+    <SUITE FILE_PATH="coverage/Happy_library$models.coverage" NAME="models Coverage Results" MODIFIED="1582378462634" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/Happy_library$manage_token.coverage" NAME="manage_token Coverage Results" MODIFIED="1582041496104" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
+    <SUITE FILE_PATH="coverage/fun_lib$views.coverage" NAME="views Coverage Results" MODIFIED="1582966048485" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/Happy_library$gen_captcha.coverage" NAME="gen_captcha Coverage Results" MODIFIED="1582034013206" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/Happy_library$excel_to_python.coverage" NAME="excel_to_python Coverage Results" MODIFIED="1582348708773" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/Happy_library$tools.coverage" NAME="tools Coverage Results" MODIFIED="1582350332001" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
+<<<<<<< HEAD
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Happy_library/__init__.py">
@@ -898,5 +1022,12 @@
         </state>
       </provider>
     </entry>
+=======
+    <SUITE FILE_PATH="coverage/Happy_library$excel_to_python.coverage" NAME="excel_to_python Coverage Results" MODIFIED="1582348708773" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
+    <SUITE FILE_PATH="coverage/Happy_library$zzzz.coverage" NAME="zzzz Coverage Results" MODIFIED="1581844498412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
+    <SUITE FILE_PATH="coverage/fun_lib$manage_token.coverage" NAME="manage_token Coverage Results" MODIFIED="1583133942199" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
+    <SUITE FILE_PATH="coverage/Happy_library$1__1_.coverage" NAME="1 (1) Coverage Results" MODIFIED="1582819497753" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/fun_lib$1__1_.coverage" NAME="1 (1) Coverage Results" MODIFIED="1582963772366" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+>>>>>>> f753b82e86c5f89ae93c484644a4f94cb0b4e1c4
   </component>
 </project>
