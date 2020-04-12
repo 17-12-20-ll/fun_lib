@@ -80,7 +80,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fun_lib',
         'USER': 'root',
-        'HOST': '192.168.0.104',
+        'HOST': '39.106.229.165',
+        # 'HOST': '127.0.0.1',
         'PASSWORD': '1107',
         'PORT': 3306
     }
@@ -124,3 +125,5 @@ STATIC_URL = '/static/'
 
 # token 过期时间
 EXPIRE = 24 * 60 * 60
+# redis
+REDIS_IP = '47.104.73.6'

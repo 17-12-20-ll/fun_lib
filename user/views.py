@@ -1,6 +1,7 @@
 import base64
 import datetime
 import json
+import re
 import time
 
 from django.db import connection
@@ -8,12 +9,14 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
 from operation.models import AdminLoginLog
+from src.models import OneSrc
 from user.models import User, Group
 from utils.gen_captcha import create_img
 from utils.manage_resp import resp
 from utils.manage_token import get_data_obj, create_token, check_token
+from utils.redis_helper import RD
 from utils.send_email import send_mail
-from utils.tools import timestamp_to_str, img_code_overdue_decode, img_code_overdue_create
+from utils.tools import img_code_overdue_decode, img_code_overdue_create
 
 
 # =======================User=======================
@@ -54,6 +57,8 @@ def login(request):
     if request.method == 'POST':
         # stus = Student.objects.filter(Q(s_age__lte=18) | Q(s_age__gt=20))  # 或操作
         login_name = request.POST.get('login_name')
+        # 获取浏览器指纹，用于校验用户的唯一性，以及多线程登陆该账号
+        fp = request.META.get('HTTP_AUTHENTICATION_FP')
         img_token = request.POST.get('img_token')
         try:
             code = int(request.POST.get('code'))
@@ -74,8 +79,12 @@ def login(request):
             login_name=login_name).filter(is_admin=1).first()
         if not u:
             return resp(201, '当前用户未注册')
+        if not back:
+            if u.is_admin:
+                return resp(203, '管理员不能登陆前端')
         if u.pwd != pwd:
             return resp(202, '密码错误！')
+        # 管理员==========
         # 都通过的情况下 表示该用户已经通过校验
         # 如果登陆的是管理员的话，需要记录管理员登陆日志
         if back:
@@ -83,6 +92,11 @@ def login(request):
             a_l.login_ip = request.META.get('HTTP_X_FORWARDED_FOR')
             a_l.admin_name = u.login_name
             a_l.save()
+        # 用户==========
+        # 管理员不需要进行账号线程限制 enable=-1
+        # 用户进行线程限制
+        # 1. 读取当前id是否
+        # RD.save_uset_name(u.id, fp)  # 存储当前用户线程控制指纹
         # 改变用户行为
         ori_op = request.META.get('HTTP_X_FORWARDED_FOR')
         if u.cur_login_ip:
@@ -262,7 +276,8 @@ def get_user(request):
         d = request.GET
         p = int(d.get('p', 1))
         n = int(d.get('n', 10))
-        if len(d) > 2:
+        tmp_d = [i for i in d if d[i]]
+        if len(tmp_d) > 2:
             # 查询时 group_id=1&login_name=u&user_name=k&email=1096
             tmp_l = []
             for i in d:
@@ -280,16 +295,20 @@ def get_user(request):
             # 代表有检索条件
             sql = f'select a.id,a.login_name,a.user_name,b.name,a.add_time,a.end_time,a.last_login_ip,a.cur_login_ip' \
                   f' from user a join `group` b on a.group_id=b.id where {tmp_sql}' \
-                  f' limit {(p - 1) * n},{n}'
+                  f' order by a.id desc limit {(p - 1) * n},{n}'
         else:
             # 代表查询所有数据分页
             sql = f'select a.id,a.login_name,a.user_name,b.name,a.add_time,a.end_time,a.last_login_ip,a.cur_login_ip' \
                   f' from user a join `group` b on a.group_id=b.id ' \
-                  f' limit {(p - 1) * n},{n}'
+                  f' order by a.id desc limit {(p - 1) * n},{n}'
         cursor.execute(sql)
-        cursor.close()
         data = [format_user_list(i) for i in cursor.fetchall()]
-        return resp(data=data, count=len(data))
+        sql = re.sub(r'a\.id.*?cur_login_ip', 'count(*)', sql)
+        sql = sql.split("limit")[0].strip()
+        cursor.execute(sql)
+        l = cursor.fetchone()
+        cursor.close()
+        return resp(data=data, count=l[0])
 
 
 def get_user_count(request):
@@ -401,18 +420,6 @@ def add_back_user(request):
         u.save()
         return resp()
 
-
-# def query_two_src(request):
-#     """条件查询二级资源"""
-#     if request.method == 'GET':
-#         d = request.GET
-#         q = Q()
-#         for i in d:
-#             if d[i] and i != "page" and i != "page_num":
-#                 tmp = i if i == 'one_src_id' else i + '__contains'
-#                 q.add(Q(**{tmp: d[i]}), Q.AND)
-#         data = TwoSrc.objects.filter(q)
-#         return resp(data=[i.to_update_return() for i in data])
 
 def query_user(request):
     if request.method == 'GET':
@@ -529,6 +536,18 @@ def get_group_info(request):
             return resp(data=[i.to_name_dict() for i in g_all])
 
 
+def to_group_one_src(request):
+    """根据会员分组查找当前分组的所有资源"""
+    if request.method == 'GET':
+        p = int(request.GET.get('p', 1))
+        n = int(request.GET.get('n', 10))
+        g_id = request.GET.get('id')
+        g = Group.objects.filter(id=g_id).first()
+        tmp = [i.to_two_group_dict() for i in g.go.all()]
+        data = [j for i in tmp for j in i]
+        return resp(data=data[(p - 1) * n:p * n], count=len(data))
+
+
 def get_to_name_info(request):
     """根据分组名查询分组"""
     if request.method == 'GET':
@@ -537,3 +556,35 @@ def get_to_name_info(request):
         if name:
             g_all = Group.objects.filter(name__contains=name)
         return resp(data=[i.to_name_dict() for i in g_all])
+
+
+def check_user(request):
+    if request.method == 'GET':
+        token = request.META.get('HTTP_AUTHENTICATION')
+        obj = check_token(token)
+        if not obj:
+            return resp(204, '用户信息过期')
+        u_id = obj['id']
+        u = User.objects.filter(id=u_id).first()
+        end_time = u.end_time
+        if not end_time:
+            return resp(201, '用户还未购买资源')
+        # 获取用户当前时间是否过期
+        if datetime.datetime.now() > end_time:
+            # 用户过期
+            return resp(202, '用户过期')
+        # 查询当前用户的资源权限
+        group = Group.objects.filter(id=u.group_id).first()
+        # 获取当前用户对应的一级分类id
+        cursor = connection.cursor()
+        sql = f'select a.id from one_src a join one_src_group b on a.id=b.one_src_id join `group` c on ' \
+              f'c.id=b.group_id join user d on d.group_id=c.id where d.id={u_id}'
+        cursor.execute(sql)
+        one_src_id_list = [str(i[0]) for i in cursor.fetchall()]
+        sql = f'select a.id from one_src a left join two_src b on a.id=b.one_src_id left join three_src c ' \
+              f'on b.id=c.two_src_id where a.id in ({",".join(one_src_id_list)});'
+        cursor.execute(sql)
+        data = OneSrc.objects.filter(id__in=[i for i in {i[0] for i in cursor.fetchall()}])
+        cursor.close()
+        data = [i.to_all_dict() for i in data]
+        return resp(data=data)

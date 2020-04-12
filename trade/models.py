@@ -8,8 +8,9 @@ from user.models import Group, User
 
 class TradeType(models.Model):
     name = models.CharField(max_length=64, verbose_name='充值类型名称')
+    url = models.CharField(max_length=128, verbose_name='淘宝链接')
     price = models.IntegerField(verbose_name='价格')
-    group = models.ForeignKey(Group, related_name='t', on_delete=models.SET_NULL, null=True, verbose_name='权限组')
+    group = models.ForeignKey(Group, related_name='t', on_delete=models.CASCADE, null=True, verbose_name='权限组')
     days = models.IntegerField(verbose_name='天数')
 
     def to_dict(self):
@@ -18,7 +19,8 @@ class TradeType(models.Model):
             'name': self.name,
             'price': self.price,
             'days': self.days,
-            'group': self.group_id
+            'group': self.group_id,
+            'url': self.url
         }
 
     def to_front_dict(self):
@@ -26,6 +28,13 @@ class TradeType(models.Model):
             'id': self.id,
             'vip': self.name,
             'price': self.price,
+            'url': self.url
+        }
+
+    def to_name_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name
         }
 
     class Meta:
@@ -76,22 +85,24 @@ class CardRechargeList(models.Model):
             'trade_type_id': self.trade_type_id
         }
 
+    def export_list(self):
+        return [self.card_id, self.card_pwd, self.trade_type.name]
+
     class Meta:
         db_table = 'card_recharge_list'
 
 
 class Order(models.Model):
+    id = models.CharField(max_length=128, verbose_name='订单id', primary_key=True)
     login_name = models.CharField(max_length=32, verbose_name='登陆名')
     trade_type = models.IntegerField(verbose_name='充值类型')  # 1: 支付宝 2: 微信 3: 卡密
     # 如果充值类型为卡密自助充值 则存在卡号
-    card_id = models.IntegerField(verbose_name='充值卡号')
+    card_id = models.CharField(max_length=128, verbose_name='充值卡号')
     trade_group = models.IntegerField(verbose_name='支付分类')
-    total = models.IntegerField(verbose_name='充值金额')
+    total = models.FloatField(verbose_name='充值金额')
     days = models.IntegerField(verbose_name='有效期')
     add_time = models.DateTimeField(verbose_name='充值时间', auto_now_add=True)
     desc = models.CharField(max_length=32, verbose_name='备注')
-    status = models.IntegerField(verbose_name='支付状态', default=0)  # 0代表没有支付 1 代表已经支付
-    order_end_time = models.IntegerField(verbose_name='订单过期时间戳')  # 5min时间戳过期
 
     def to_dict(self):
         return {

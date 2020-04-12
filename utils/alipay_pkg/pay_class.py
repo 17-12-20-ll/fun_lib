@@ -20,7 +20,7 @@ private_key = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key_string + '\n----
 # 支付宝公钥
 public_key = '-----BEGIN PUBLIC KEY-----\n' + public_key_string + '\n-----END PUBLIC KEY-----'
 # 回调地址
-notify_url = 'http://chongyantech.xyz:9999/trade/alipay_return/'
+notify_url = 'http://chongyantech.xyz:9999/trade/pay_return/'
 
 
 class Alipay:

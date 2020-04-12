@@ -8,9 +8,9 @@ class User(models.Model):
     # 注意：累积金额从用户充值的金额累加 ,分组待模型
     login_name = models.CharField(max_length=32, unique=True, null=False, verbose_name='登录名')
     pwd = models.CharField(max_length=32, null=False, verbose_name='密码')
-    cur_login_ip = models.CharField(max_length=32, verbose_name='本次登录ip')
+    cur_login_ip = models.CharField(max_length=64, verbose_name='本次登录ip')
     cur_login_time = models.DateTimeField(verbose_name='当前登录时间')
-    last_login_ip = models.CharField(max_length=32, verbose_name='最后一次登录ip')
+    last_login_ip = models.CharField(max_length=64, verbose_name='最后一次登录ip')
     last_login_time = models.DateTimeField(verbose_name='最后一次登录时间')
     user_name = models.CharField(max_length=16, verbose_name='用户名或公司名')
     phone = models.CharField(max_length=11, verbose_name='用户电话')

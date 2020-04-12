@@ -1,16 +1,7 @@
-d = {
-    'p': 1,
-    'n': 10,
-    'one_src_id': 6,
-    'name': ''
-}
-tmp_sql = []
+import re
 
-for i in d:
-    if i not in ['p', 'n']:
-        if d[i]:
-            if i == 'one_src_id':
-                tmp_sql.append(f'a.one_src_id={d[i]}')
-            if i == 'name':
-                tmp_sql.append(f'a.name like "%{d[i]}%"')
-print(' and '.join(tmp_sql))
+a = '★VIP4高级大客户专用包年 3000元【专享端口，高权限，高速，稳定】'
+b = 'VIP3会员包月 100元【Reaxys、药典、中英文等，无发票】'
+
+print(re.findall(r'(VIAA.*?\d)', b))
+print(None.strip())

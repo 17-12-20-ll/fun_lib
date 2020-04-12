@@ -28,7 +28,8 @@ urlpatterns = [
     path('get_user_count/', views.get_user_count),
     path('add_back_user/', views.add_back_user),
     path('query_user/', views.query_user),
+    path('check_user/', views.check_user),
+    path('to_group_one_src/', views.to_group_one_src),
     # 新分页接口
     path('get_user/', views.get_user),
-
 ]

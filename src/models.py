@@ -1,8 +1,11 @@
+import json
+
 from django.db import models
 
 # Create your models here.
 from user.models import Group
 from utils.tools import del_pos
+from json_field import JSONField
 
 
 class OneSrc(models.Model):
@@ -35,6 +38,9 @@ class OneSrc(models.Model):
             'twos': del_pos([i.to_front_list_dict() for i in self.twos.all()]),
         }
 
+    def to_two_dict(self):
+        return [i.to_front_list_dict() for i in self.twos.all()]
+
     class Meta:
         db_table = 'one_src'
 
@@ -43,6 +49,12 @@ class OneSrcGroup(models.Model):
     """用户组和一级资源关联关系"""
     one_src = models.ForeignKey(OneSrc, related_name='og', on_delete=models.DO_NOTHING)
     group = models.ForeignKey(Group, related_name='go', on_delete=models.DO_NOTHING)
+
+    def to_one_dict(self):
+        return [i.to_related_dict() for i in self.one_src.twos.all()]
+
+    def to_two_group_dict(self):
+        return [i.to_name_id_dict() for i in self.one_src.twos.all()]
 
     class Meta:
         db_table = 'one_src_group'
@@ -73,9 +85,17 @@ class TwoSrc(models.Model):
         return {
             'name': self.name,
             'pos': self.pos,
-            'one_src': self.one_src.name,
+            'one_src': self.one_src.name if self.one_src.name else '',
             'threes': del_pos([i.to_simple_dict() for i in self.threes.all()]),
             'add_time': self.add_time,
+        }
+
+    def to_name_id_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'one_src': self.one_src.name if self.one_src else '',
+            'add_time': self.add_time.strftime("%Y-%m-%d %H:%M:%S")
         }
 
     def to_front_list_dict(self):
@@ -105,6 +125,9 @@ class TwoSrc(models.Model):
             'add_time': self.add_time.strftime("%Y-%m-%d %H:%M:%S")
         }
 
+    def to_related_dict(self):
+        return [i.id for i in self.threes.all()]
+
     class Meta:
         db_table = 'two_src'
 
@@ -119,15 +142,6 @@ class ThreeSrc(models.Model):
     add_time = models.DateTimeField(auto_now_add=True, verbose_name='添加时间')
     four_src = models.ForeignKey('FourSrc', related_name='fours', on_delete=models.SET_NULL, null=True)
 
-    # 名称：
-    # 描述：
-    # 排序：
-    # Url：
-    # 二级资源
-    # 账号资源
-    # 用户名：
-    # 密码：
-    # 添加时间
     def to_simple_dict(self):
         return {
             'name': self.name,
@@ -135,6 +149,19 @@ class ThreeSrc(models.Model):
             'url': self.url,
             'two_src': self.two_src.name,
             'four_src': self.four_src.name,
+            'username': self.four_src.username,
+            'pwd': self.four_src.pwd,
+            'pos': self.pos,
+            'add_time': self.add_time.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+
+    def to_simple_back_dict(self):
+        return {
+            'name': self.name,
+            'desc': self.desc,
+            'url': self.url,
+            'two_src': self.two_src.id,
+            'four_src': self.four_src.id,
             'username': self.four_src.username,
             'pwd': self.four_src.pwd,
             'pos': self.pos,
@@ -159,6 +186,11 @@ class FourSrc(models.Model):
     desc = models.CharField(max_length=128, verbose_name='描述')
     username = models.CharField(max_length=128, verbose_name='账号')
     pwd = models.CharField(max_length=128, verbose_name='密码')
+    code_script = models.CharField(max_length=2048, verbose_name='脚本代码存储')
+    cookie_time = models.IntegerField(verbose_name='cookie存储时长')
+    cookie = JSONField(max_length=2048, verbose_name='存储cookie脚本')
+    success_url = models.CharField(max_length=255, verbose_name='url链接')
+    error_field = models.CharField(max_length=64, verbose_name='失败检测字段')
     add_time = models.DateTimeField(auto_now_add=True, verbose_name='添加时间')
 
     def to_detail_dict(self):
@@ -170,6 +202,11 @@ class FourSrc(models.Model):
             'desc': self.desc,
             'username': self.username,
             'pwd': self.pwd,
+            'code_script': self.code_script,
+            'cookie_time': self.cookie_time,
+            'cookie': json.dumps(self.cookie),
+            'success_url': self.success_url,
+            'error_field': self.error_field,
             'add_time': self.add_time.strftime("%Y-%m-%d %H:%M:%S"),
         }
 

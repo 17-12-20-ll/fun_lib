@@ -11,4 +11,5 @@ urlpatterns = [
     path('get_help_list_info/', views.get_help_list_info),
     path('get_admin_log_data/', views.get_admin_log_data),
     path('get_admin_log_count/', views.get_admin_log_count),
+    path('get_order/', views.get_order),
 ]

@@ -1,14 +1,20 @@
 import json
+import re
 
+import demjson
 from django.db import connection
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
 from src.models import OneSrc, TwoSrc, OneSrcGroup, FourSrc, ThreeSrc
+from trade.models import CardRechargeList, TradeType
+from user.models import User, Group
 from utils.manage_resp import resp
 
 # ===================OneSrc=====================
-from utils.tools import del_pos
+from utils.manage_token import check_token
+from utils.send_email import send_mail
+from utils.tools import del_pos, splash_execute, string_encryption, parsing_list
 
 
 def get_one_src_info(request):
@@ -33,55 +39,27 @@ def format_one_src_list(data):
     }
 
 
-def get_one_src_page_data(request):
-    """获取一级分类的资源"""
-    if request.method == 'GET':
-        cursor = connection.cursor()
-        page = int(request.GET.get('p', 1))
-        page_num = int(request.GET.get('n', 10))
-        cursor.execute(f'select id,name,pos from one_src limit {(page - 1) * page_num},{page_num}')
-        cursor.close()
-        return resp(data=[format_one_src_list(i) for i in cursor.fetchall()])
-
-
-def get_one_src_page_count(request):
-    """获取一级分类的总数"""
-    if request.method == 'GET':
-        count = OneSrc.objects.count()
-        return resp(count=count)
-
-
-# ================ 优化分页数据 -- 将搜索和分页集成到一起数目也一起返回
-# def create_sql(_source, conditions, **kwargs):
-#     """
-#     生成对应表的sql语句
-#     :param _source: 返回的字段
-#     :param conditions: 数据集
-#     :param kwargs: 可选值为：groups:分组 orders:排序 table1,table2,table3... 多个表的关联
-#     :return: sql语句
-#     """
-#     # a = f'select id,name,pos from one_src limit {(page - 1) * page_num},{page_num}'
-#     _source = ['id', 'name', 'pos']
-#     conditions = {'p': 1, 'n': 10}
-#     table1 = 'one_src'
-
-
 def get_one_src(request):
     cursor = connection.cursor()
     d = request.GET
     p = int(d.get('p', 1))
     n = int(d.get('n', 10))
-    if len(d) > 2:
+    tmp_d = [i for i in d if d[i]]
+    if len(tmp_d) > 2:
         # name
         # 代表有检索条件
         sql = f'select id,name,pos from one_src where name like "%{d["name"]}%" limit {(p - 1) * n},{n}'
     else:
         # 代表查询所有数据分页
-        sql = f'select id,name,pos from one_src limit {(p - 1) * n},{n}'
+        sql = f'select id,name,pos from one_src order by id desc limit {(p - 1) * n},{n}'
     cursor.execute(sql)
-    cursor.close()
     data = [format_one_src_list(i) for i in cursor.fetchall()]
-    return resp(data=data, count=len(data))
+    sql = re.sub(r'id,.*?pos', 'count(*)', sql)
+    sql = sql.split("limit")[0].strip()
+    cursor.execute(sql)
+    l = cursor.fetchone()
+    cursor.close()
+    return resp(data=data, count=l[0])
 
 
 @csrf_exempt
@@ -96,12 +74,7 @@ def add_one_src(request):
         o_src.desc = desc
         o_src.pos = pos
         o_src.save()
-        for i in groups:
-            # 新添多对多关系
-            og = OneSrcGroup()
-            og.one_src_id = o_src.id
-            og.group_id = i
-            og.save()
+        OneSrcGroup.objects.bulk_create([OneSrcGroup(group_id=i, one_src_id=o_src.id) for i in groups])
         return resp()
 
 
@@ -195,7 +168,7 @@ def get_two_src_info(request):
             return resp(data=t.to_detail_dict() if t else 'not src')
         else:
             t_all = TwoSrc.objects.all()
-            return resp(data=[i.to_list_dict() for i in t_all])
+            return resp(data=[i.to_name_id_dict() for i in t_all])
 
 
 def get_front_src_info(request):
@@ -235,7 +208,8 @@ def get_two_src(request):
         d = request.GET
         p = int(d.get('p', 1))
         n = int(d.get('n', 10))
-        if len(d) > 2:
+        tmp_d = [i for i in d if d[i]]
+        if len(tmp_d) > 2:
             # 查询时 有一级分类，标题
             # 一级分类为 one_src_id
             tmp_l = []
@@ -249,28 +223,19 @@ def get_two_src(request):
             tmp_sql = ' and '.join(tmp_l)
             # 代表有检索条件
             sql = f'select a.id,b.name,a.name,a.pos,a.add_time from two_src a join one_src b on b.id=a.one_src_id' \
-                  f' where {tmp_sql} limit {(p - 1) * n},{n}'
+                  f' where {tmp_sql} order by a.id desc limit {(p - 1) * n},{n}'
         else:
             # 代表查询所有数据分页
             sql = f'select a.id,b.name,a.name,a.pos,a.add_time from two_src a join one_src b on b.id=a.one_src_id' \
-                  f' limit {(p - 1) * n},{n}'
+                  f' order by a.id desc limit {(p - 1) * n},{n}'
         cursor.execute(sql)
-        cursor.close()
         data = [format_two_src_list(i) for i in cursor.fetchall()]
-        return resp(data=data, count=len(data))
-
-
-def query_two_src(request):
-    """条件查询二级资源"""
-    if request.method == 'GET':
-        d = request.GET
-        q = Q()
-        for i in d:
-            if d[i] and i != "page" and i != "page_num":
-                tmp = i if i == 'one_src_id' else i + '__contains'
-                q.add(Q(**{tmp: d[i]}), Q.AND)
-        data = TwoSrc.objects.filter(q)
-        return resp(data=[i.to_update_return() for i in data])
+        sql = re.sub(r'a\.id,.*?add_time', 'count(*)', sql)
+        sql = sql.split("limit")[0].strip()
+        cursor.execute(sql)
+        l = cursor.fetchone()
+        cursor.close()
+        return resp(data=data, count=l[0])
 
 
 # ===================ThreeSrc=====================
@@ -308,6 +273,47 @@ def get_three_src_page_count(request):
     if request.method == 'GET':
         count = ThreeSrc.objects.count()
         return resp(count=count)
+
+
+# 获取三级分页数据
+def get_three_src(request):
+    if request.method == 'GET':
+        # 获取筛选条件数据
+        cursor = connection.cursor()
+        d = request.GET
+        p = int(d.get('p', 1))
+        n = int(d.get('n', 10))
+        tmp_d = [i for i in d if d[i]]
+        if len(tmp_d) > 2:
+            # 查询时 有二级资源名称、三级资源名称、四级资源名称
+            tmp_l = []
+            for i in d:
+                if i not in ['p', 'n']:
+                    if d[i]:
+                        if i == 'tw':  # two
+                            tmp_l.append(f'b.name like "%{d[i]}%"')
+                        elif i == 'th':  # three
+                            tmp_l.append(f'a.name like "%{d[i]}%"')
+                        elif i == 'fo':  # four
+                            tmp_l.append(f'c.name like "%{d[i]}%"')
+            tmp_sql = ' and '.join(tmp_l)
+            # 代表有检索条件
+            sql = f'select a.id,a.name,a.pos,a.url,a.add_time,b.name,c.name from three_src a join two_src b on ' \
+                  f'b.id=a.two_src_id join four_src c on ' \
+                  f'c.id=a.four_src_id where {tmp_sql} order by a.id desc limit {(p - 1) * n},{n}'
+        else:
+            # 代表查询所有数据分页
+            sql = f'select a.id,a.name,a.pos,a.url,a.add_time,b.name,c.name from three_src a join two_src b on ' \
+                  f'b.id=a.two_src_id join four_src c on ' \
+                  f'c.id=a.four_src_id order by a.id desc limit {(p - 1) * n},{n}'
+        cursor.execute(sql)
+        data = [format_three_src_list(i) for i in cursor.fetchall()]
+        sql = re.sub(r'a\.id,.*?c.name', 'count(*)', sql)
+        sql = sql.split("limit")[0].strip()
+        cursor.execute(sql)
+        l = cursor.fetchone()
+        cursor.close()
+        return resp(data=data, count=l[0])
 
 
 @csrf_exempt
@@ -357,9 +363,10 @@ def get_three_src_info(request):
     """获取三级资源"""
     if request.method == 'GET':
         tr_id = request.GET.get('id')
+        t = request.GET.get('t')  # 查询或者是编辑的获取详情
         if tr_id:
             tr = ThreeSrc.objects.filter(id=tr_id).first()
-            return resp(data=tr.to_simple_dict() if tr else 'not src')
+            return resp(data=tr.to_simple_back_dict() if t == 'edit' else tr.to_simple_dict() if tr else 'not src')
         else:
             tr_all = ThreeSrc.objects.all()
             return resp(data=[i.to_simple_dict() for i in tr_all])
@@ -373,9 +380,21 @@ def add_four_src(request):
         name = request.POST.get('name')
         code = request.POST.get('code')
         url = request.POST.get('url')
+        success_url = request.POST.get('success_url')
         desc = request.POST.get('desc')
         username = request.POST.get('username')
         pwd = request.POST.get('pwd')
+        code_script = request.POST.get('code_script')
+        cookie_time = int(request.POST.get('cookie_time')) if request.POST.get('cookie_time') else 0
+        # json.loads 正常解析'{"x":1, "y":2, "z":3}'
+        # 但不能解析 "{x:1, y:2, z:3}"
+        # 借助demjson.decode解析
+        try:
+            cookie = demjson.decode(request.POST.get('cookie')) if request.POST.get('cookie') else ''
+        except:
+            # 如果存储的是字符串，就不会被json解析。
+            cookie = request.POST.get('cookie')
+        error_field = request.POST.get('error_field')
         f = FourSrc()
         f.name = name
         f.code = code
@@ -383,6 +402,11 @@ def add_four_src(request):
         f.desc = desc
         f.username = username
         f.pwd = pwd
+        f.code_script = code_script
+        f.cookie_time = cookie_time
+        f.cookie = cookie
+        f.success_url = success_url
+        f.error_field = error_field
         f.save()
         return resp()
 
@@ -398,6 +422,11 @@ def update_four_src(request):
         desc = request.POST.get('desc')
         username = request.POST.get('username')
         pwd = request.POST.get('pwd')
+        code_script = request.POST.get('code_script')
+        cookie_time = int(request.POST.get('cookie_time'))
+        cookie = demjson.decode(request.POST.get('cookie'))
+        success_url = request.POST.get('success_url')
+        error_field = request.POST.get('error_field')
         f = FourSrc.objects.filter(id=f_id).first()
         f.name = name
         f.code = code
@@ -405,6 +434,11 @@ def update_four_src(request):
         f.desc = desc
         f.username = username
         f.pwd = pwd
+        f.code_script = code_script
+        f.cookie_time = cookie_time
+        f.cookie = cookie
+        f.success_url = success_url
+        f.error_field = error_field
         f.save()
         return resp(data=f.to_detail_dict())
 
@@ -433,32 +467,14 @@ def format_four_src_list(data):
     }
 
 
-def get_four_src_page_data(request):
-    """获取账号密码资源分页数据"""
-    if request.method == 'GET':
-        cursor = connection.cursor()
-        page = int(request.GET.get('p', 1))
-        page_num = int(request.GET.get('n', 10))
-        cursor.execute(
-            f'select id,name,code,url,username,pwd,add_time from four_src limit {(page - 1) * page_num},{page_num}')
-        cursor.close()
-        return resp(data=[format_four_src_list(i) for i in cursor.fetchall()])
-
-
-def get_four_src_page_count(request):
-    """获取二级资源的总页数"""
-    if request.method == 'GET':
-        count = FourSrc.objects.count()
-        return resp(count=count)
-
-
 def get_four_src(request):
     if request.method == 'GET':
         cursor = connection.cursor()
         d = request.GET
         p = int(d.get('p', 1))
         n = int(d.get('n', 10))
-        if len(d) > 2:
+        tmp_d = [i for i in d if d[i]]
+        if len(tmp_d) > 2:
             # 查询时 标题和编码
             tmp_l = []
             for i in d:
@@ -471,15 +487,19 @@ def get_four_src(request):
             tmp_sql = ' and '.join(tmp_l)
             # 代表有检索条件
             sql = f'select id,name,code,url,username,pwd,add_time from four_src' \
-                  f' where {tmp_sql} limit {(p - 1) * n},{n}'
+                  f' where {tmp_sql} order by id desc limit {(p - 1) * n},{n}'
         else:
             # 代表查询所有数据分页
             sql = f'select id,name,code,url,username,pwd,add_time from four_src' \
-                  f' limit {(p - 1) * n},{n}'
+                  f' order by id desc limit {(p - 1) * n},{n}'
         cursor.execute(sql)
-        cursor.close()
         data = [format_four_src_list(i) for i in cursor.fetchall()]
-        return resp(data=data, count=len(data))
+        sql = re.sub(r'id,.*?add_time', 'count(*)', sql)
+        sql = sql.split("limit")[0].strip()
+        cursor.execute(sql)
+        l = cursor.fetchone()
+        cursor.close()
+        return resp(data=data, count=l[0])
 
 
 def query_four_src(request):
@@ -498,27 +518,85 @@ def query_four_src(request):
 def test(request):
     if request.method == 'GET':
         """测试：数据同步三级资源"""
-        # d = [{'name': '090177', 'pwd': '090177'}, {'name': 'goodel13', 'pwd': 'Werttrew1'},
-        #      {'name': 'quee2435', 'pwd': 'Oxford2020'}, {'name': 'hwaj', 'pwd': 'Password1'},
-        #      {'name': 'nguyet10', 'pwd': '07D5ebd77a1!'}, {'name': 'njmr', 'pwd': 'Mary2466'},
-        #      {'name': '05897', 'pwd': 'shonglifen50'}, {'name': '0016186019', 'pwd': 'zxy19860727'},
-        #      {'name': '9120150126', 'pwd': 'xly881002'}, {'name': '2010100104', 'pwd': '010034'},
-        #      {'name': '20070225', 'pwd': '19800815'}, {'name': 'ncal1', 'pwd': 'April18th'},
-        #      {'name': 'test', 'pwd': ''},
-        #      {'name': '05092', 'pwd': '19741218'}, {'name': 'SWE1609023', 'pwd': 'SDss123456'},
-        #      {'name': 'amijares', 'pwd': 'Pikaplup12301999'}, {'name': '2004990006', 'pwd': 'zys711026'},
-        #      {'name': 'b1022976', 'pwd': 'NR2h7b23Ry47'}, {'name': '1406183161', 'pwd': 'hy19831003'},
-        #      {'name': 'blank1ls', 'pwd': 'Bridge*0206'}, {'name': '17623', 'pwd': 'Lee'},
-        #      {'name': 'lexi.fredericksen@coyotes.usd.edu', 'pwd': 'Lmf1234!'},
-        #      {'name': 'snayemi', 'pwd': 'Omar12252014'},
-        #      {'name': 'DMP15102', 'pwd': 'Tuckerlove98'}]
-        # FourSrc.objects.bulk_create([FourSrc(username=i['name'], pwd=i['pwd']) for i in d])
-        # 将三级资源使用账号资源归类
-        # t_all = ThreeSrc.objects.all()
-        # f_all = FourSrc.objects.all()
-        # for i in t_all:
-        #     for j in f_all:
-        #         if i.username == j.username:
-        #             i.four_src_id = j.id
-        #             i.save()
         return resp(data='success')
+
+
+# =================== 公共删除接口
+def del_data(request):
+    if request.method == "GET":
+        t = request.GET.get('t')
+        obj_id = request.GET.get('id')
+        obj = ''
+        if t == 'user':
+            obj = User.objects.filter(id=obj_id)
+        elif t == 'one_src':
+            # 进行级联删除 ，删除关于当前一级分类的数据
+            obj = OneSrc.objects.filter(id=obj_id)
+        elif t == 'two_src':
+            obj = TwoSrc.objects.filter(id=obj_id)
+        elif t == 'three_src':
+            obj = ThreeSrc.objects.filter(id=obj_id)
+        elif t == 'four_src':
+            obj = FourSrc.objects.filter(id=obj_id)
+        elif t == 'group':
+            obj = Group.objects.filter(id=obj_id)
+        elif t == 'card':
+            obj = CardRechargeList.objects.filter(id=obj_id)
+        elif t == 'trade_type':
+            obj = TradeType.objects.filter(id=obj_id)
+        elif t == 'admin':
+            obj = User.objects.filter(id=obj_id).filter(is_admin=1)
+        if obj:
+            # 特殊关系需要处理的数据 一级分类
+            if t == 'one_src':
+                # 先进行级联关系数据删除
+                o = obj.first()
+                OneSrcGroup.objects.filter(one_src_id=o.id).delete()
+            if t == 'group':
+                # 删除会员分组，并带有资源关联的数据。先删除关联数据。
+                o = obj.first()
+                OneSrcGroup.objects.filter(group_id=o.id).delete()
+            obj.delete()
+            return resp(msg='删除成功!')
+        else:
+            return resp(400, '没有查找到该资源')
+
+
+@csrf_exempt
+def get_resource(request):
+    if request.method == 'POST':
+        # 三级资源id
+        t_id = int(request.POST.get("code"))
+        token = request.POST.get("token")
+        # 1.判断用户token是否有效
+        if (not token) or token == 'null':
+            return resp(404, '没有token')
+        obj = check_token(token)
+        if not obj:
+            return resp(404, 'token过期')
+        u_id = obj['id']
+        # 判断
+        # 2.判断用户是否有权限访问该资源 ,无访问权限返回404
+        u = User.objects.filter(id=u_id).first()
+        ids = [i.to_one_dict() for i in u.group.go.all()]
+        ids = parsing_list(ids)
+        if t_id not in ids:
+            return resp(404, '无权限访问')
+        # 3.根据三级资源获取cookie数据
+        t = ThreeSrc.objects.filter(id=t_id).first()
+        cookie = t.four_src.cookie
+        # 4.根据三级资源获取登陆链接
+        url = t.four_src.url
+        return resp(data={
+            "href": url,
+            "thing": string_encryption(cookie)
+        })
+
+
+# ============ 资源错误回调邮箱
+def re_email(request):
+    if request.method == 'POST':
+        msg = request.POST.get('msg')
+        to = request.POST.get('to')
+        send_mail(to, msg=msg)
+        return resp()

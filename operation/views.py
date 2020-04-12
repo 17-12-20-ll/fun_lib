@@ -1,3 +1,5 @@
+import re
+
 from django.db import connection
 from django.views.decorators.csrf import csrf_exempt
 
@@ -119,3 +121,58 @@ def get_admin_log_count(request):
     if request.method == 'GET':
         count = AdminLoginLog.objects.count()
         return resp(count=count)
+
+
+# ================= 用户财务管理
+def format_order_list(d):
+    # 会员	类型	充值卡号	充值金额	有效期	购买时间	备注
+    #  id| login_name | trade_type | card_id| trade_group | total | days | add_time  | desc
+    tmp_type = {
+        1: '支付宝在线支付',
+        2: '微信在线支付',
+        3: '卡密充值',
+        4: '对公转账'
+    }
+    return {
+        'name': d[1],
+        'type': tmp_type[d[2]],
+        'card': d[3],
+        'total': d[5],
+        'days': d[6],
+        'time': d[7].strftime("%Y-%m-%d %H:%M:%S"),
+        'desc': d[8]
+    }
+
+
+def get_order(request):
+    """获取订单数据"""
+    if request.method == "GET":
+        cursor = connection.cursor()
+        d = request.GET
+        p = int(d.get('p', 1))
+        n = int(d.get('n', 10))
+        tmp_d = [i for i in d if d[i]]
+        if len(tmp_d) > 2:
+            # 查询时 充值卡号、会员名称
+            tmp_l = []
+            for i in d:
+                if i not in ['p', 'n']:
+                    if d[i]:
+                        if i == 'card':
+                            tmp_l.append(f'card_id="{d[i]}"')
+                        if i == 'name':
+                            tmp_l.append(f'login_name like "%{d[i]}%"')
+            tmp_sql = ' and '.join(tmp_l)
+            # 代表有检索条件
+            sql = f'select * from `order` where {tmp_sql} limit {(p - 1) * n},{n}'
+        else:
+            # 代表查询所有数据分页
+            sql = f'select * from `order` limit {(p - 1) * n},{n}'
+        cursor.execute(sql)
+        data = [format_order_list(i) for i in cursor.fetchall()]
+        sql = re.sub(r'\*', 'count(*)', sql)
+        sql = sql.split("limit")[0].strip()
+        cursor.execute(sql)
+        l = cursor.fetchone()
+        cursor.close()
+        return resp(data=data, count=l[0])
